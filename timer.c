@@ -8,6 +8,10 @@
 
 //----Function verifies whether input set in CLI is valid for processing----//
 int verify_input(char* argument){
+	if(strlen(argument) == 0){
+		printf("ERROR: Must input something at least");
+		return 1;
+	}
 	char* p;
 	errno = 0;
 	long arg = strtol(argument, &p, 10);
@@ -27,44 +31,34 @@ int verify_input(char* argument){
 }
 
 int main(int argc, char* argv[]){
-	if(strlen(argv[1]) == 0){
-		printf ("ERROR: Must input argument\n");
-		return 1;
-	}
-	/* for (i = 1; i < argc; i++){
-		if(argv[i][0] == '-'){
-			switch (argv[i][1]){
-				case 'w':
-					printf("Work interval was specified\n");
-					if(strlen(argv[i++]) != 0){
-						if(verify_input(argv[i++]) == 0){
-							char* p;
-							long arg = strtol(argv[i++], &p, 10);
-							int work_interval = arg;
-						}
-						else{
-							break;
-						}
-					}
-					else{
+	int work_interval; //DECLARING GLOBAL VARIABLES
+	int break_interval;
+	int amount_of_intervals;
+	int long_break_interval;
+
+	for(int i = 1; i < argc; i++){ //FLAG HANDLING
+		if(argv[i][0] == '?' || (argv[i][0] == '-' && argv[i][1] == 'h')){
+			printf("HELP MESSAGE GOES HERE\n");
+			return 1;
+		}
+		else if(argv[i][0] == '-'){
+			if(verify_input(argv[i+1]) == 0){
+				switch (argv[i][1]){
+					case 'w':
+						char* work_argument_pointer;
+						long work_argument = strtol(argv[i+1], &work_argument_pointer, 10);			
+						work_interval = work_argument;
+						i = 2;
 						break;
-					}
+				}
 			}
 		}
-	}*/
-//FUCKED
-//
-//
+	}
 
-	if(verify_input(argv[1]) == 1){
-		return 1;
-	}	
-
-	char* p;
-	errno = 0;
-	long arg = strtol(argv[1], &p, 10);
-	int timer_minutes = arg;
-
+	char* work_argument_pointer;
+	long arg = strtol(argv[1], &work_argument_pointer, 10);
+	int timer_minutes = work_interval;
+	
 	time_t rawtime;
 	struct tm * timeinfo;
 	time( &rawtime );
